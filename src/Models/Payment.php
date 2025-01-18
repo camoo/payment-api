@@ -9,6 +9,7 @@ use Camoo\Payment\Exception\InvalidArgumentException;
 use Camoo\Payment\ValueObject\Money;
 use DateTimeImmutable;
 use DateTimeInterface;
+use DateTimeZone;
 
 /**
  * Class Payment
@@ -18,6 +19,8 @@ use DateTimeInterface;
  */
 final class Payment implements ModelInterface
 {
+    private const TIME_ZONE = 'UTC';
+
     public function __construct(
         public readonly int $id,
         public readonly Money $amount,
@@ -43,26 +46,29 @@ final class Payment implements ModelInterface
      * - createdAt (int timestamp OR date string)
      * - network (string)
      * - status (string)
+     *
      * Optional fields:
      * - fees (float)
      * - netAmount (float)
-     * - completedAt (int timestamp OR date string)
-     * - notifiedAt (int timestamp OR date string)
+     * - completedAt (int|string)
+     * - notifiedAt (int|string)
      * - phoneNumber (string)
      * - country (string)
      *
      * @param array<string,mixed> $data
+     *
+     * @throws InvalidArgumentException if required, fields are missing or invalid
      */
     public static function fromArray(array $data): self
     {
-        // Basic validation
-        if (!isset($data['id'],
-            $data['amount'],
-            $data['currency'],
-            $data['createdAt'],
-            $data['network'],
-            $data['status'])) {
-            throw new InvalidArgumentException('Missing required fields for Payment creation.');
+        // Validate required fields are present
+        foreach (['id', 'amount', 'currency', 'createdAt', 'network', 'status'] as $required) {
+            if (!array_key_exists($required, $data)) {
+                throw new InvalidArgumentException(sprintf(
+                    'Missing required field "%s" for Payment creation.',
+                    $required
+                ));
+            }
         }
 
         return new self(
@@ -105,15 +111,17 @@ final class Payment implements ModelInterface
         ];
     }
 
-    /** Helper method to parse date/time from either timestamp (int) or string. */
+    /**
+     * Helper method to parse date/time from either a numeric timestamp or a string.
+     */
     private static function parseDateTime(int|string $value): DateTimeInterface
     {
-        // If numeric, treat as a UNIX timestamp.
         if (is_numeric($value)) {
-            return (new DateTimeImmutable())->setTimestamp((int)$value);
+            $dateTime = (new DateTimeImmutable())->setTimestamp((int)$value);
+        } else {
+            $dateTime = new DateTimeImmutable((string)$value);
         }
 
-        // Otherwise, treat it as a date/time string.
-        return new DateTimeImmutable((string)$value);
+        return $dateTime->setTimezone(new DateTimeZone(self::TIME_ZONE));
     }
 }
