@@ -1,0 +1,10 @@
+# Ignore the vendor directory
+.php-cs-fixer.cache
+.phpunit.result.cache
+.DS
+.idea
+.phpunit.cache
+vendor
+
+# Ignore the phpunit.xml file
+phpunit.xml
