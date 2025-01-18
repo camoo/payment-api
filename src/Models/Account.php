@@ -8,9 +8,12 @@ use Camoo\Payment\Enum\Currency;
 use Camoo\Payment\ValueObject\Money;
 use DateTimeImmutable;
 use DateTimeInterface;
+use DateTimeZone;
 
 final class Account implements ModelInterface
 {
+    private const TIME_ZONE = 'UTC';
+
     public function __construct(
         public readonly Money $balance,
         public readonly DateTimeInterface $viewedAt
@@ -25,7 +28,7 @@ final class Account implements ModelInterface
                 amount: $data['account']['amount'],
                 currency: Currency::from($data['account']['currency'])
             ),
-            new DateTimeImmutable($data['account']['date'])
+            new DateTimeImmutable($data['account']['date'], new DateTimeZone(self::TIME_ZONE))
         );
     }
 

@@ -42,6 +42,11 @@ class Client
     ) {
     }
 
+    public static function create(string $apiKey, string $apiSecret, bool $debug = false, ?string $apiVersion = null): self
+    {
+        return new self($apiKey, $apiSecret, null, $debug, $apiVersion);
+    }
+
     /**
      * Send a GET request to the API.
      *
@@ -108,9 +113,7 @@ class Client
         return $baseUri . $endpoint->value;
     }
 
-    /**
-     * Lazily instantiate and return the HTTP client.
-     */
+    /** Lazily instantiate and return the HTTP client. */
     private function getHttpClient(): ClientInterface
     {
         if ($this->httpClient === null) {
@@ -135,6 +138,9 @@ class Client
         return [
             'X-Api-Key' => $this->apiKey,
             'X-Api-Secret' => $this->apiSecret,
+            'X-Api-Version' => $this->apiVersion ?? self::DEFAULT_API_VERSION,
+            'X-Api-Debug' => $this->debug ? 'true' : 'false',
+            'X-PHP-Version' => PHP_VERSION,
         ];
     }
 }

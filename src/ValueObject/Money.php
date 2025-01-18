@@ -14,6 +14,7 @@ final class Money
     ) {
     }
 
+    /** @return  array<string, mixed> $data */
     public function toArray(): array
     {
         return [
