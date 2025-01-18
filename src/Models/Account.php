@@ -28,7 +28,7 @@ final class Account implements ModelInterface
                 amount: $data['account']['amount'],
                 currency: Currency::from($data['account']['currency'])
             ),
-            new DateTimeImmutable($data['viewedAt'], new DateTimeZone(self::TIME_ZONE))
+            new DateTimeImmutable($data['account']['date'], new DateTimeZone(self::TIME_ZONE))
         );
     }
 
