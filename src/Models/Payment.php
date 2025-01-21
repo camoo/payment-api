@@ -22,7 +22,7 @@ final class Payment implements ModelInterface
     private const TIME_ZONE = 'UTC';
 
     public function __construct(
-        public readonly int $id,
+        public readonly string $id,
         public readonly Money $amount,
         public readonly DateTimeInterface $createdAt,
         public readonly string $network,
@@ -40,7 +40,7 @@ final class Payment implements ModelInterface
      * Create a Payment model from an associative array of data.
      *
      * Expected fields:
-     * - id (int)
+     * - id (string)
      * - amount (float)
      * - currency (string)
      * - createdAt (int timestamp OR date string)
@@ -62,7 +62,7 @@ final class Payment implements ModelInterface
     public static function fromArray(array $data): self
     {
         // Validate required fields are present
-        foreach (['id', 'amount', 'currency', 'createdAt', 'network', 'status'] as $required) {
+        foreach (['id', 'amount', 'currency', 'created_at', 'network', 'status'] as $required) {
             if (!array_key_exists($required, $data)) {
                 throw new InvalidArgumentException(sprintf(
                     'Missing required field "%s" for Payment creation.',
@@ -72,19 +72,19 @@ final class Payment implements ModelInterface
         }
 
         return new self(
-            id: (int)$data['id'],
+            id: $data['id'],
             amount: new Money(
                 amount: (float)$data['amount'],
                 currency: Currency::from($data['currency'])
             ),
-            createdAt: self::parseDateTime($data['createdAt']),
+            createdAt: self::parseDateTime($data['created_at']),
             network: (string)$data['network'],
             status: (string)$data['status'],
             fees: isset($data['fees']) ? (float)$data['fees'] : null,
-            netAmount: isset($data['netAmount']) ? (float)$data['netAmount'] : null,
-            completedAt: isset($data['completedAt']) ? self::parseDateTime($data['completedAt']) : null,
-            notifiedAt: isset($data['notifiedAt']) ? self::parseDateTime($data['notifiedAt']) : null,
-            phoneNumber: $data['phoneNumber'] ?? null,
+            netAmount: isset($data['net_amount']) ? (float)$data['net_amount'] : null,
+            completedAt: isset($data['completed_at']) ? self::parseDateTime($data['completed_at']) : null,
+            notifiedAt: isset($data['notified_at']) ? self::parseDateTime($data['notified_at']) : null,
+            phoneNumber: $data['phone_number'] ?? null,
             country: $data['country'] ?? null
         );
     }
@@ -111,9 +111,7 @@ final class Payment implements ModelInterface
         ];
     }
 
-    /**
-     * Helper method to parse date/time from either a numeric timestamp or a string.
-     */
+    /** Helper method to parse date/time from either a numeric timestamp or a string. */
     private static function parseDateTime(int|string $value): DateTimeInterface
     {
         if (is_numeric($value)) {
