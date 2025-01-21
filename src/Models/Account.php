@@ -25,7 +25,7 @@ final class Account implements ModelInterface
     {
         return new self(
             new Money(
-                amount: $data['account']['amount'],
+                amount: $data['account']['balance'],
                 currency: Currency::from($data['account']['currency'])
             ),
             new DateTimeImmutable($data['account']['date'], new DateTimeZone(self::TIME_ZONE))
