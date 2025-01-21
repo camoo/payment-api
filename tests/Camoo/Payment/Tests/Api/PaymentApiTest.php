@@ -37,10 +37,10 @@ use PHPUnit\Framework\TestCase;
             ->willReturn([
                 // The presence of 'cashOut' ensures no ApiException is thrown
                 'cashOut' => [
-                    'id' => 123,
+                    'id' => 'a123',
                     'amount' => 1000,
                     'currency' => 'XAF',
-                    'createdAt' => time(),
+                    'created_at' => time(),
                     'network' => 'MTN',
                     'status' => 'success',
                 ],
@@ -52,7 +52,7 @@ use PHPUnit\Framework\TestCase;
 
         // Verify we got a valid Payment model back
         $this->assertInstanceOf(Payment::class, $payment);
-        $this->assertSame(123, $payment->id);
+        $this->assertSame('a123', $payment->id);
         $this->assertInstanceOf(Money::class, $payment->amount);
         $this->assertSame(1000.0, $payment->amount->amount);
         $this->assertSame('XAF', $payment->amount->currency->value);
@@ -74,10 +74,10 @@ use PHPUnit\Framework\TestCase;
         $mockClient->expects($this->once())
             ->method('handleRequestResponse')
             ->willReturn([
-                'id' => 123,
+                'id' => 'b123',
                 'amount' => 1000,
                 'currency' => 'XAF',
-                'createdAt' => time(),
+                'created_at' => time(),
                 'network' => 'MTN',
                 'status' => 'success',
             ]);
@@ -110,10 +110,10 @@ use PHPUnit\Framework\TestCase;
             ->method('handleRequestResponse')
             ->willReturn([
                 'verify' => [
-                    'id' => 999,
+                    'id' => 'c999',
                     'amount' => 2500,
                     'currency' => 'XAF',
-                    'createdAt' => time(),
+                    'created_at' => time(),
                     'network' => 'ORANGE',
                     'status' => 'pending',
                 ],
@@ -124,7 +124,7 @@ use PHPUnit\Framework\TestCase;
         $payment = $paymentApi->verify('TX123');
 
         $this->assertInstanceOf(Payment::class, $payment);
-        $this->assertSame(999, $payment->id);
+        $this->assertSame('c999', $payment->id);
         $this->assertSame(2500.0, $payment->amount->amount);
         $this->assertSame('XAF', $payment->amount->currency->value);
         $this->assertSame('ORANGE', $payment->network);
@@ -148,7 +148,7 @@ use PHPUnit\Framework\TestCase;
                 'id' => 999,
                 'amount' => 2500,
                 'currency' => 'XAF',
-                'createdAt' => time(),
+                'created_at' => time(),
                 'network' => 'ORANGE',
                 'status' => 'pending',
             ]);
