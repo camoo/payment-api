@@ -33,7 +33,7 @@ use PHPUnit\Framework\TestCase;
             ->with($this->equalTo($mockResponse))
             ->willReturn([
                 'account' => [
-                    'amount' => 100.0,
+                    'balance' => 100.0,
                     'currency' => 'XAF',
                     'date' => '2023-01-01 10:00:00',
                 ],
