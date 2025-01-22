@@ -12,4 +12,5 @@ enum Status: string
     case CONFIRMED = 'CONFIRMED';
     case FAILED = 'FAILED';
     case CANCELED = 'CANCELED';
+    case ERRORED = 'ERRORED';
 }
