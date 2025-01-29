@@ -72,10 +72,10 @@ final class Payment implements ModelInterface
         }
 
         return new self(
-            id: $data['id'],
+            id: $data['id'] ?? '',
             amount: new Money(
-                amount: (float)$data['amount'],
-                currency: Currency::from($data['currency'])
+                amount: (float)($data['amount'] ?? 0.0),
+                currency: Currency::from($data['currency'] ?? 'XAF')
             ),
             createdAt: self::parseDateTime($data['created_at']),
             network: (string)$data['network'],

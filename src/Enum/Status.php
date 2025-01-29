@@ -13,4 +13,6 @@ enum Status: string
     case FAILED = 'FAILED';
     case CANCELED = 'CANCELED';
     case ERRORED = 'ERRORED';
+    case SUCCESS = 'SUCCESS';
+    case PENDING = 'PENDING';
 }
