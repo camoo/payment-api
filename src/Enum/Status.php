@@ -15,4 +15,6 @@ enum Status: string
     case ERRORED = 'ERRORED';
     case SUCCESS = 'SUCCESS';
     case PENDING = 'PENDING';
+
+    case UNDERINVESTIGATION = 'UNDERINVESTIGATION';
 }
