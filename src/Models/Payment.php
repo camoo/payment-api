@@ -61,31 +61,68 @@ final class Payment implements ModelInterface
      */
     public static function fromArray(array $data): self
     {
-        // Validate required fields are present
-        foreach (['id', 'amount', 'currency', 'created_at', 'network', 'status'] as $required) {
-            if (!array_key_exists($required, $data)) {
-                throw new InvalidArgumentException(sprintf(
-                    'Missing required field "%s" for Payment creation.',
-                    $required
-                ));
+
+        $get = static function (array $dataRaw, array $keys, $default = null): mixed {
+            foreach ($keys as $key) {
+                if (array_key_exists($key, $dataRaw)) {
+                    return $dataRaw[$key];
+                }
             }
+
+            return $default;
+        };
+
+        // Required fields
+        $id = $get($data, ['id']);
+        $amountVal = $get($data, ['amount']);
+        $currency = $get($data, ['currency']);
+        $createdVal = $get($data, ['created_at', 'createdAt']);
+        $network = $get($data, ['network']);
+        $status = $get($data, ['status']);
+
+        self::assertRequired([
+            'id' => $id,
+            'amount' => $amountVal,
+            'currency' => $currency,
+            'created_at' => $createdVal,
+            'network' => $network,
+            'status' => $status,
+        ]);
+
+        if (!is_scalar($id)) {
+            throw new InvalidArgumentException('Field "id" must be a scalar string.');
         }
 
+        if (!is_numeric($amountVal)) {
+            throw new InvalidArgumentException('Field "amount" must be numeric.');
+        }
+
+        if (!is_scalar($currency)) {
+            throw new InvalidArgumentException('Field "currency" must be a string.');
+        }
+
+        $amount = new Money(
+            amount: (float)$amountVal,
+            currency: Currency::from((string)$currency)
+        );
+
+        $createdAt = self::parseDateTime((string)$createdVal);
+
+        $completedRaw = $get($data, ['completed_at', 'completedAt']);
+        $notifiedRaw = $get($data, ['notified_at', 'notifiedAt']);
+
         return new self(
-            id: $data['id'],
-            amount: new Money(
-                amount: (float)$data['amount'],
-                currency: Currency::from($data['currency'])
-            ),
-            createdAt: self::parseDateTime($data['created_at']),
-            network: (string)$data['network'],
-            status: (string)$data['status'],
-            fees: isset($data['fees']) ? (float)$data['fees'] : null,
-            netAmount: isset($data['net_amount']) ? (float)$data['net_amount'] : null,
-            completedAt: isset($data['completed_at']) ? self::parseDateTime($data['completed_at']) : null,
-            notifiedAt: isset($data['notified_at']) ? self::parseDateTime($data['notified_at']) : null,
-            phoneNumber: $data['phone_number'] ?? null,
-            country: $data['country'] ?? null
+            id: (string)$id,
+            amount: $amount,
+            createdAt: $createdAt,
+            network: (string)$network,
+            status: (string)$status,
+            fees: ($fees = $get($data, ['fees'])) !== null ? (float)$fees : null,
+            netAmount: ($net = $get($data, ['net_amount', 'netAmount'])) !== null ? (float)$net : null,
+            completedAt: $completedRaw !== null ? self::parseDateTime($completedRaw) : null,
+            notifiedAt: $notifiedRaw !== null ? self::parseDateTime($notifiedRaw) : null,
+            phoneNumber: $get($data, ['phone_number', 'phoneNumber']),
+            country: $get($data, ['country'])
         );
     }
 
@@ -99,13 +136,13 @@ final class Payment implements ModelInterface
         return [
             'id' => $this->id,
             'amount' => $this->amount->toArray(),
-            'createdAt' => $this->createdAt->format('Y-m-d H:i:s'),
+            'createdAt' => $this->createdAt->format(DateTimeInterface::ATOM),
             'network' => $this->network,
             'status' => $this->status,
             'fees' => $this->fees,
             'netAmount' => $this->netAmount,
-            'completedAt' => $this->completedAt?->format('Y-m-d H:i:s'),
-            'notifiedAt' => $this->notifiedAt?->format('Y-m-d H:i:s'),
+            'completedAt' => $this->completedAt?->format(DateTimeInterface::ATOM),
+            'notifiedAt' => $this->notifiedAt?->format(DateTimeInterface::ATOM),
             'phoneNumber' => $this->phoneNumber,
             'country' => $this->country,
         ];
@@ -114,12 +151,27 @@ final class Payment implements ModelInterface
     /** Helper method to parse date/time from either a numeric timestamp or a string. */
     private static function parseDateTime(int|string $value): DateTimeInterface
     {
-        if (is_numeric($value)) {
-            $dateTime = (new DateTimeImmutable())->setTimestamp((int)$value);
-        } else {
-            $dateTime = new DateTimeImmutable((string)$value);
-        }
+        $dateTime = is_numeric($value)
+            ? (new DateTimeImmutable())->setTimestamp((int)$value)
+            : new DateTimeImmutable((string)$value);
 
         return $dateTime->setTimezone(new DateTimeZone(self::TIME_ZONE));
+    }
+
+    /**
+     * Validate required fields.
+     *
+     * @param array<string,mixed> $fields
+     */
+    private static function assertRequired(array $fields): void
+    {
+        foreach ($fields as $name => $value) {
+            if ($value === null) {
+                throw new InvalidArgumentException(sprintf(
+                    'Missing required field "%s" for Payment creation.',
+                    $name
+                ));
+            }
+        }
     }
 }
