@@ -9,11 +9,15 @@ info:
 servers:
   - url: https://api.camoo.cm/v1/payment
     description: Production server
-
+security:
+  - ApiKeyAuth: []
+  - ApiSecretAuth: []
 paths:
   /cashout:
     post:
+      tags: [Payment]
       summary: Create a cashout (process payment / transfer)
+      operationId: createCashOut
       x-codeSamples:
         - lang: cURL
           source: |
@@ -33,9 +37,6 @@ paths:
       description: |
         Initiate a cashout to a recipient (mobile-money, bank or other provider).
         Request must be authenticated with X-Api-Key and X-Api-Secret headers.
-      security:
-        - ApiKeyAuth: []
-        - ApiSecretAuth: []
       requestBody:
         required: true
         content:
@@ -63,10 +64,10 @@ paths:
                     name: "Product 2"
                     quantity: 1
                     unit_price: 50.0
-              user_browser_data:
-                userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36"
-                acceptLanguage: "en-US,en;q=0.9"
-                ipAddress: "1.2.3.4"
+                user_browser_data:
+                  userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+                  acceptLanguage: "en-US,en;q=0.9"
+                  ipAddress: "1.2.3.4"
       responses:
         "200":
           description: Cashout accepted / Payment resource (synchronous view)
@@ -107,12 +108,12 @@ paths:
 
   /verify:
     get:
+      tags: [Payment]
       summary: Verify transaction status
+      operationId: verifyTransaction
       description: |
         Return the payment/cashout resource for the given id. The repository expects the query param name `id`.
-      security:
-        - ApiKeyAuth: []
-        - ApiSecretAuth: []
+        Request must be authenticated with X-Api-Key and X-Api-Secret headers.
       parameters:
         - name: id
           in: query
@@ -148,11 +149,9 @@ paths:
 
   /account:
     get:
+      tags: [Account]
       summary: Get account balance and metadata
       description: Returns the account balance and viewed timestamp. Requires API credentials.
-      security:
-        - ApiKeyAuth: []
-        - ApiSecretAuth: []
       responses:
         "200":
           description: Account information
@@ -208,6 +207,7 @@ components:
           description:  Free-form JSON object with contextual data (order id, platform reference, etc.)
           properties:
             user_browser_data:
+              additionalProperties: true
               type: object
               description: Information about the user's browser and network environment.
               properties:
@@ -294,7 +294,7 @@ components:
           amount:
             amount: 100
             currency: "XAF"
-          created_at: "2023-01-01T12:00:00Z"
+          createdAt: "2023-01-01T12:00:00Z"
           network: "MTN"
           status: "PENDING"
           fees: 2.5
@@ -379,11 +379,10 @@ components:
               name: "Product 2"
               quantity: 1
               unit_price: 50.0
-
-        user_browser_data:
-          userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36"
-          acceptLanguage: "en-US,en;q=0.9"
-          ipAddress: "1.2.3.4"
+          user_browser_data:
+            userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+            acceptLanguage: "en-US,en;q=0.9"
+            ipAddress: "1.2.3.4"
 
 tags:
   - name: Payment
