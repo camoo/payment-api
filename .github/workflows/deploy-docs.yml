@@ -5,7 +5,6 @@ on:
     branches:
       - main
 
-# Allow the workflow to push to the repository
 permissions:
   contents: write
   pages: write
@@ -17,7 +16,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          # persist credentials so subsequent git push from the runner uses the provided GITHUB_TOKEN
           persist-credentials: true
 
       - name: Ensure docs folder and index present
@@ -30,7 +28,7 @@ jobs:
       - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v4
         with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./docs
           publish_branch: gh-pages
-          # GITHUB_TOKEN will be used automatically; no need to pass it explicitly when persist-credentials=true
           commit_message: "chore(docs): deploy API docs"
