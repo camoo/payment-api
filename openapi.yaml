@@ -31,7 +31,7 @@ paths:
               "notification_url": "https://myapp.com/webhook",
               "currency": "XAF",
               "external_reference": "my-site-reference",
-              "shopping_cart_details": {"order_id": "ORD-12345"}
+              "shopping_cart_details": {"top_id": "ORD-12345"}
             }'
 
       description: |
