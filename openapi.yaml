@@ -1,0 +1,403 @@
+openapi: 3.0.3
+info:
+  title: Camoo Payment API (Cashout) - OpenAPI
+  version: "1.0.0"
+  description: |
+    Concrete OpenAPI (Swagger) specification describing the cashout flow and related endpoints found in the repository.
+    - Base server example: http://localhost:8000
+    - Authentication uses two header API credentials: X-Api-Key and X-Api-Secret.
+servers:
+  - url: https://api.camoo.cm/v1/payment
+    description: Local development server
+
+paths:
+  /api/payment/cashout:
+    post:
+      summary: Create a cashout (process payment / transfer)
+      description: |
+        Initiate a cashout to a recipient (mobile-money, bank or other provider).
+        Request must be authenticated with X-Api-Key and X-Api-Secret headers.
+      security:
+        - ApiKeyAuth: []
+        - ApiSecretAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CashOutRequest'
+            example:
+              amount: 100
+              phone_number: "+1234567890"
+              notification_url: "https://myapp.com/webhook"
+              currency: "XAF"
+              provider: "mobilemoney"
+              metadata:
+                order_id: "ORD-12345"
+      responses:
+        "200":
+          description: Cashout accepted / Payment resource (synchronous view)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CashOutResponse'
+        "400":
+          description: Bad request (validation error)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "401":
+          description: Authentication failed (invalid or missing API credentials)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "402":
+          description: Payment or account insufficient funds (implementation-dependent)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "422":
+          description: Unprocessable entity (provider specific validation error)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "500":
+          description: Internal server error / provider failure
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/payment/verify:
+    get:
+      summary: Verify transaction status
+      description: |
+        Return the payment/cashout resource for the given id. The repository expects the query param name `id`.
+      security:
+        - ApiKeyAuth: []
+        - ApiSecretAuth: []
+      parameters:
+        - name: id
+          in: query
+          required: true
+          schema:
+            type: string
+          description: The transaction id to verify (server-generated id)
+      responses:
+        "200":
+          description: Payment verification result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VerifyResponse'
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        "404":
+          description: Transaction not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/account/balance:
+    get:
+      summary: Get account balance and metadata
+      description: Returns the account balance and viewed timestamp. Requires API credentials.
+      security:
+        - ApiKeyAuth: []
+        - ApiSecretAuth: []
+      responses:
+        "200":
+          description: Account information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountResponse'
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/account/create:
+    post:
+      summary: Create an account (example public route)
+      description: Create a new service account. Typically public with minimal info; API keys are returned once.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - user_id
+              properties:
+                user_id:
+                  type: integer
+                  description: Local user id in your system
+                email:
+                  type: string
+                  format: email
+                  description: Account email address
+                currency:
+                  type: string
+                  description: Default currency (optional)
+                  enum: [EUR, USD, XAF, XOF]
+      responses:
+        "201":
+          description: Account created (returns api_key and api_secret — secret shown only once)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  api_key:
+                    type: string
+                  api_secret:
+                    type: string
+                  email:
+                    type: string
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-Api-Key
+      description: Public API key identifying the caller's account.
+    ApiSecretAuth:
+      type: apiKey
+      in: header
+      name: X-Api-Secret
+      description: Secret for authenticating the request (use together with X-Api-Key).
+
+  schemas:
+    CashOutRequest:
+      type: object
+      required:
+        - amount
+      properties:
+        amount:
+          type: number
+          format: float
+          description: |
+            Monetary amount to cash out in major currency units (e.g., 100 means 100 XAF or 100 USD depending on currency).
+        phone_number:
+          type: string
+          description: Recipient phone number in international format (E.164 recommended). Required for mobile-money providers.
+        notification_url:
+          type: string
+          format: uri
+          description: HTTPS endpoint that will receive asynchronous status updates (webhook). Optional but recommended.
+        currency:
+          type: string
+          description: Currency code for this transaction. If omitted, server default is used.
+          enum:
+            - EUR
+            - USD
+            - XAF
+            - XOF
+        provider:
+          type: string
+          description: Identifier of the payment provider to use (e.g., "stripe", "flutterwave", "mobilemoney"). Optional.
+        fees:
+          type: number
+          format: float
+          description: Optional explicit fee amount to apply. If omitted, the system may calculate fees automatically.
+        metadata:
+          type: object
+          additionalProperties: true
+          description: Free-form JSON object with contextual data (order id, customer reference, etc.)
+        recipient_email:
+          type: string
+          format: email
+          description: Recipient email (if sending by email/bank)
+        recipient_name:
+          type: string
+          description: Recipient display name
+
+    Money:
+      type: object
+      properties:
+        amount:
+          type: number
+          format: float
+        currency:
+          type: string
+          enum: [EUR, USD, XAF, XOF]
+
+    Payment:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Server-generated transaction identifier
+        amount:
+          $ref: '#/components/schemas/Money'
+        createdAt:
+          type: string
+          format: date-time
+          description: ISO 8601 datetime or integer timestamp
+        created_at:
+          type: integer
+          description: Unix timestamp (some responses might use numeric time)
+        network:
+          type: string
+          description: Provider or network label (e.g., MTN, ORANGE, stripe)
+        status:
+          type: string
+          description: Transaction status
+          enum:
+            - CREATED
+            - INITIALISED
+            - IN_PROGRESS
+            - CONFIRMED
+            - SUCCESS
+            - PENDING
+            - FAILED
+            - CANCELED
+            - ERRORED
+            - UNDERINVESTIGATION
+        fees:
+          type: number
+          format: float
+          nullable: true
+        netAmount:
+          type: number
+          format: float
+          nullable: true
+        completedAt:
+          type: string
+          format: date-time
+          nullable: true
+        notifiedAt:
+          type: string
+          format: date-time
+          nullable: true
+        phoneNumber:
+          type: string
+          nullable: true
+        country:
+          type: string
+          nullable: true
+        provider_transaction_id:
+          type: string
+          nullable: true
+          description: Transaction id supplied by the payment provider
+        metadata:
+          type: object
+          additionalProperties: true
+
+    CashOutResponse:
+      type: object
+      properties:
+        cashOut:
+          $ref: '#/components/schemas/Payment'
+      example:
+        cashOut:
+          id: "a123"
+          amount:
+            amount: 100
+            currency: "XAF"
+          created_at: 1670000000
+          network: "MTN"
+          status: "PENDING"
+          fees: 2.5
+          netAmount: 97.5
+          phoneNumber: "+1234567890"
+          country: "CM"
+
+    VerifyResponse:
+      type: object
+      properties:
+        verify:
+          $ref: '#/components/schemas/Payment'
+      example:
+        verify:
+          id: "a123"
+          amount:
+            amount: 100
+            currency: "XAF"
+          createdAt: "2023-01-01T12:00:00Z"
+          network: "MTN"
+          status: "SUCCESS"
+          completedAt: "2023-01-01T12:01:00Z"
+          notifiedAt: "2023-01-01T12:01:05Z"
+          phoneNumber: "+1234567890"
+          country: "CM"
+
+    AccountResponse:
+      type: object
+      properties:
+        account:
+          type: object
+          properties:
+            balance:
+              $ref: '#/components/schemas/Money'
+            viewedAt:
+              type: string
+              format: date-time
+      example:
+        account:
+          balance:
+            amount: 1000.0
+            currency: "XAF"
+          viewedAt: "2023-01-01T10:00:00Z"
+
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: "Invalid payload"
+        errors:
+          type: object
+          additionalProperties: true
+          example:
+            amount: "Amount must be numeric and greater than 0"
+            phone_number: "Phone number must include country code"
+
+  examples:
+    CashOutExample:
+      summary: Typical cashout request
+      value:
+        amount: 100
+        phone_number: "+1234567890"
+        notification_url: "https://myapp.com/webhook"
+        currency: "XAF"
+        provider: "mobilemoney"
+        metadata:
+          order_id: "ORD-12345"
+
+tags:
+  - name: Payment
+    description: Payment / cashout operations
+  - name: Account
+    description: Account and balance operations
