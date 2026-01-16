@@ -1,0 +1,30 @@
+name: Deploy API docs to gh-pages
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Ensure docs folder and index present
+        run: |
+          if [ ! -d "./docs" ] || [ ! -f "./docs/index.html" ]; then
+            echo "docs directory or docs/index.html missing. Create docs/index.html with ReDoc first."
+            exit 1
+          fi
+
+      - name: Deploy to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs
+          publish_branch: gh-pages
+          commit_message: "chore(docs): deploy API docs"
