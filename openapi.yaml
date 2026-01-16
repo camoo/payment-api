@@ -14,6 +14,22 @@ paths:
   /cashout:
     post:
       summary: Create a cashout (process payment / transfer)
+      x-codeSamples:
+        - lang: cURL
+          source: |
+            curl -sS -X POST 'https://api.camoo.cm/v1/payment/cashout' \
+            -H 'Content-Type: application/json' \
+            -H 'X-Api-Key: YOUR_API_KEY' \
+            -H 'X-Api-Secret: YOUR_API_SECRET' \
+            -d '{
+              "amount": 100,
+              "phone_number": "+1234567890",
+              "notification_url": "https://myapp.com/webhook",
+              "currency": "XAF",
+              "external_reference": "my-site-reference",
+              "shopping_cart_details": {"order_id": "ORD-12345"}
+            }'
+
       description: |
         Initiate a cashout to a recipient (mobile-money, bank or other provider).
         Request must be authenticated with X-Api-Key and X-Api-Secret headers.
@@ -185,11 +201,25 @@ components:
           description: HTTPS endpoint that will receive asynchronous status updates (webhook). Optional but recommended.
         external_reference:
           type: string
-          description: Identifier of the shop provider to use (e.g., "user-123"). Optional.
+          description: Client-provided reference identifier for tracking the transaction (e.g., "123-user-site-reference", "my-site-reference"). Optional.
         shopping_cart_details:
           type: object
           additionalProperties: true
-          description: Free-form JSON object with contextual data (order id, platform reference, etc.)
+          description:  Free-form JSON object with contextual data (order id, platform reference, etc.)
+          properties:
+            user_browser_data:
+              type: object
+              description: Information about the user's browser and network environment.
+              properties:
+                userAgent:
+                  type: string
+                  description: User-Agent string from the user's browser.
+                acceptLanguage:
+                  type: string
+                  description: Accept-Language header value indicating the user's language preferences.
+                ipAddress:
+                  type: string
+                  description: IP address of the user making the request.
 
     Money:
       type: object
@@ -213,9 +243,6 @@ components:
           type: string
           format: date-time
           description: ISO 8601 datetime or integer timestamp
-        created_at:
-          type: integer
-          description: ISO 8601 datetime string (responses use this camelCase field
         network:
           type: string
           description: Provider or network label (e.g., MTN, ORANGE, stripe)
