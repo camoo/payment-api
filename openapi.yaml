@@ -8,10 +8,10 @@ info:
     - Authentication uses two header API credentials: X-Api-Key and X-Api-Secret.
 servers:
   - url: https://api.camoo.cm/v1/payment
-    description: Local development server
+    description: Production server
 
 paths:
-  /api/payment/cashout:
+  /cashout:
     post:
       summary: Create a cashout (process payment / transfer)
       description: |
@@ -31,9 +31,26 @@ paths:
               phone_number: "+1234567890"
               notification_url: "https://myapp.com/webhook"
               currency: "XAF"
-              provider: "mobilemoney"
-              metadata:
+              external_reference: "123-user-site-reference"
+              shopping_cart_details:
                 order_id: "ORD-12345"
+                email: "user@test.com"
+                customerName: "John Doe"
+                description: "Payment for order ORD-12345"
+                langKey: "fr"
+                items:
+                  - item_id: "item-001"
+                    name: "Product 1"
+                    quantity: 2
+                    unit_price: 25.0
+                  - item_id: "item-002"
+                    name: "Product 2"
+                    quantity: 1
+                    unit_price: 50.0
+              user_browser_data:
+                userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36"
+                acceptLanguage: "en-US,en;q=0.9"
+                ipAddress: "1.2.3.4"
       responses:
         "200":
           description: Cashout accepted / Payment resource (synchronous view)
@@ -72,7 +89,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
 
-  /api/payment/verify:
+  /verify:
     get:
       summary: Verify transaction status
       description: |
@@ -113,7 +130,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
 
-  /api/account/balance:
+  /account:
     get:
       summary: Get account balance and metadata
       description: Returns the account balance and viewed timestamp. Requires API credentials.
@@ -129,54 +146,6 @@ paths:
                 $ref: '#/components/schemas/AccountResponse'
         "401":
           description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-
-  /api/account/create:
-    post:
-      summary: Create an account (example public route)
-      description: Create a new service account. Typically public with minimal info; API keys are returned once.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - email
-                - user_id
-              properties:
-                user_id:
-                  type: integer
-                  description: Local user id in your system
-                email:
-                  type: string
-                  format: email
-                  description: Account email address
-                currency:
-                  type: string
-                  description: Default currency (optional)
-                  enum: [EUR, USD, XAF, XOF]
-      responses:
-        "201":
-          description: Account created (returns api_key and api_secret — secret shown only once)
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                  api_key:
-                    type: string
-                  api_secret:
-                    type: string
-                  email:
-                    type: string
-        "400":
-          description: Validation error
           content:
             application/json:
               schema:
@@ -200,12 +169,13 @@ components:
       type: object
       required:
         - amount
+        - phone_number
       properties:
         amount:
           type: number
           format: float
           description: |
-            Monetary amount to cash out in major currency units (e.g., 100 means 100 XAF or 100 USD depending on currency).
+            Monetary amount to cash out in major currency units (e.g., 100 means 100 XAF or 100 XOF depending on currency).
         phone_number:
           type: string
           description: Recipient phone number in international format (E.164 recommended). Required for mobile-money providers.
@@ -213,32 +183,13 @@ components:
           type: string
           format: uri
           description: HTTPS endpoint that will receive asynchronous status updates (webhook). Optional but recommended.
-        currency:
+        external_reference:
           type: string
-          description: Currency code for this transaction. If omitted, server default is used.
-          enum:
-            - EUR
-            - USD
-            - XAF
-            - XOF
-        provider:
-          type: string
-          description: Identifier of the payment provider to use (e.g., "stripe", "flutterwave", "mobilemoney"). Optional.
-        fees:
-          type: number
-          format: float
-          description: Optional explicit fee amount to apply. If omitted, the system may calculate fees automatically.
-        metadata:
+          description: Identifier of the shop provider to use (e.g., "user-123"). Optional.
+        shopping_cart_details:
           type: object
           additionalProperties: true
-          description: Free-form JSON object with contextual data (order id, customer reference, etc.)
-        recipient_email:
-          type: string
-          format: email
-          description: Recipient email (if sending by email/bank)
-        recipient_name:
-          type: string
-          description: Recipient display name
+          description: Free-form JSON object with contextual data (order id, platform reference, etc.)
 
     Money:
       type: object
@@ -264,7 +215,7 @@ components:
           description: ISO 8601 datetime or integer timestamp
         created_at:
           type: integer
-          description: Unix timestamp (some responses might use numeric time)
+          description: ISO 8601 datetime string (responses use this camelCase field
         network:
           type: string
           description: Provider or network label (e.g., MTN, ORANGE, stripe)
@@ -304,13 +255,6 @@ components:
         country:
           type: string
           nullable: true
-        provider_transaction_id:
-          type: string
-          nullable: true
-          description: Transaction id supplied by the payment provider
-        metadata:
-          type: object
-          additionalProperties: true
 
     CashOutResponse:
       type: object
@@ -323,7 +267,7 @@ components:
           amount:
             amount: 100
             currency: "XAF"
-          created_at: 1670000000
+          created_at: "2023-01-01T12:00:00Z"
           network: "MTN"
           status: "PENDING"
           fees: 2.5
@@ -392,9 +336,27 @@ components:
         phone_number: "+1234567890"
         notification_url: "https://myapp.com/webhook"
         currency: "XAF"
-        provider: "mobilemoney"
-        metadata:
+        external_reference: "my-site-reference"
+        shopping_cart_details:
           order_id: "ORD-12345"
+          email: "user@test.com"
+          customerName: "John Doe"
+          description: "Payment for order ORD-12345"
+          langKey: "fr"
+          items:
+            - item_id: "item-001"
+              name: "Product 1"
+              quantity: 2
+              unit_price: 25.0
+            - item_id: "item-002"
+              name: "Product 2"
+              quantity: 1
+              unit_price: 50.0
+
+        user_browser_data:
+          userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36"
+          acceptLanguage: "en-US,en;q=0.9"
+          ipAddress: "1.2.3.4"
 
 tags:
   - name: Payment
