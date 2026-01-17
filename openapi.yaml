@@ -33,6 +33,154 @@ paths:
               "external_reference": "my-site-reference",
               "shopping_cart_details": {"top_id": "ORD-12345"}
             }'
+        - lang:  Python
+          source: |
+            import requests
+
+            url = 'https://api.camoo.cm/v1/payment/cashout'
+            headers = {
+              'Content-Type': 'application/json',
+              'X-Api-Key': 'YOUR_API_KEY',
+              'X-Api-Secret': 'YOUR_API_SECRET'
+            }
+            data = {
+              "amount": 100,
+              "phone_number": "+1234567890",
+              "notification_url": "https://myapp.com/webhook",
+              "currency": "XAF",
+              "external_reference": "my-site-reference",
+              "shopping_cart_details": {"top_id": "ORD-12345"}
+            }
+
+            response = requests.post(url, json=data, headers=headers)
+            print(response.json())
+
+        - lang:   Java
+          source: |
+            import java.io.OutputStream;
+            import java.net.HttpURLConnection;
+            import java.net.URL;
+
+            public class CashOutExample {
+                public static void main(String[] args) {
+                    try {
+                        URL url = new URL("https://api.camoo.cm/v1/payment/cashout");
+                        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                        conn.setRequestMethod("POST");
+                        conn.setRequestProperty("Content-Type", "application/json");
+                        conn.setRequestProperty("X-Api-Key", "YOUR_API_KEY");
+                        conn.setRequestProperty("X-Api-Secret", "YOUR_API_SECRET");
+                        conn.setDoOutput(true);
+
+                        String jsonInputString = "{"
+                                + "\"amount\": 100,"
+                                + "\"phone_number\": \"+1234567890\","
+                                + "\"notification_url\": \"https://myapp.com/webhook\","
+                                + "\"currency\": \"XAF\","
+                                + "\"external_reference\": \"my-site-reference\","
+                                + "\"shopping_cart_details\": {\"top_id\": \"ORD-12345\"}"
+                                + "}";
+
+                        try(OutputStream os = conn.getOutputStream()) {
+                            byte[] input = jsonInputString.getBytes("utf-8");
+                            os.write(input, 0, input.length);           
+                        }
+
+                        int code = conn.getResponseCode();
+                        System.out.println("Response Code: " + code);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+        - lang:   PHP
+          source: |
+            <?php
+            $url = 'https://api.camoo.cm/v1/payment/cashout';
+            $data = array(
+              "amount" => 100,
+              "phone_number" => "+1234567890",
+              "notification_url" => "https://myapp.com/webhook",
+              "currency" => "XAF",
+              "external_reference" => "my-site-reference",
+              "shopping_cart_details" => array("top_id" => "ORD-12345")
+            );
+
+            $options = array(
+              'http' => array(
+                'header'  => "Content-Type: application/json\r\n" .
+                             "X-Api-Key: YOUR_API_KEY\r\n" .
+                             "X-Api-Secret: YOUR_API_SECRET\r\n",
+                'method'  => 'POST',
+                'content' => json_encode($data),
+              ),
+            );
+            $context  = stream_context_create($options);
+            $result = file_get_contents($url, false, $context);
+            if ($result === FALSE) {
+              die('Error occurred');
+            }
+
+            var_dump($result);
+            ?>
+
+        - lang:   Ruby
+          source: |
+            require 'net/http'
+            require 'uri'
+            require 'json'
+
+            uri = URI.parse("https://api.camoo.cm/v1/payment/cashout")
+            request = Net::HTTP::Post.new(uri)
+            request.content_type = "application/json"
+            request["X-Api-Key"] = "YOUR_API_KEY"
+            request["X-Api-Secret"] = "YOUR_API_SECRET"
+            request.body = JSON.dump({
+              "amount" => 100,
+              "phone_number" => "+1234567890",
+              "notification_url" => "https://myapp.com/webhook",
+              "currency" => "XAF",
+              "external_reference" => "my-site-reference",
+              "shopping_cart_details" => { "top_id" => "ORD-12345" }
+            })
+
+            req_options = {
+              use_ssl: uri.scheme == "https",
+            }
+
+            response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
+              http.request(request)
+            end
+
+            puts response.body
+
+        - lang:  JavaScript
+          source: |
+            const axios = require('axios');
+
+            const data = {
+              amount: 100,
+              phone_number: "+1234567890",
+              notification_url: "https://myapp.com/webhook",
+              currency: "XAF",
+              external_reference: "my-site-reference",
+              shopping_cart_details: { top_id: "ORD-12345" }
+            };
+
+            axios.post('https://api.camoo.cm/v1/payment/cashout', data, {
+              headers: {
+                'Content-Type': 'application/json',
+                'X-Api-Key': 'YOUR_API_KEY',
+                'X-Api-Secret': 'YOUR_API_SECRET'
+              }
+            })
+            .then(response => {
+              console.log(response.data);
+            })
+            .catch(error => {
+              console.error(error);
+            }); 
 
       description: |
         Initiate a cashout to a recipient (mobile-money, bank or other provider).
@@ -111,6 +259,27 @@ paths:
       tags: [Payment]
       summary: Verify transaction status
       operationId: verifyTransaction
+      x-codeSamples:
+        - lang: cURL
+          source: |
+            curl -sS -X GET 'https://api.camoo.cm/v1/payment/verify?id=TRANSACTION_ID' \
+            -H 'X-Api-Key: YOUR_API_KEY' \
+            -H 'X-Api-Secret: YOUR_API_SECRET'
+        - lang: Python
+          source: |
+            import requests
+
+            url = 'https://api.camoo.cm/v1/payment/verify'
+            headers = {
+              'X-Api-Key': 'YOUR_API_KEY',
+              'X-Api-Secret': 'YOUR_API_SECRET'
+            }
+            params = {
+              'id': 'TRANSACTION_ID'
+            }
+
+            response = requests.get(url, headers=headers, params=params)
+            print(response.json())
       description: |
         Return the payment/cashout resource for the given id. The repository expects the query param name `id`.
         Request must be authenticated with X-Api-Key and X-Api-Secret headers.
@@ -151,6 +320,25 @@ paths:
     get:
       tags: [Account]
       summary: Get account balance and metadata
+      operationId: getAccountInfo
+      x-codeSamples:
+        - lang: cURL
+          source: |
+            curl -sS -X GET 'https://api.camoo.cm/v1/payment/account' \
+            -H 'X-Api-Key: YOUR_API_KEY' \
+            -H 'X-Api-Secret: YOUR_API_SECRET'
+        - lang: Python
+          source: |
+            import requests
+
+            url = 'https://api.camoo.cm/v1/payment/account'
+            headers = {
+              'X-Api-Key': 'YOUR_API_KEY',
+              'X-Api-Secret': 'YOUR_API_SECRET'
+            }
+
+            response = requests.get(url, headers=headers)
+            print(response.json())
       description: Returns the account balance and viewed timestamp. Requires API credentials.
       responses:
         "200":
@@ -221,34 +409,31 @@ components:
                   type: string
                   description: IP address of the user making the request.
 
-    Money:
-      type: object
-      properties:
-        amount:
-          type: number
-          format: float
-        currency:
-          type: string
-          enum: [EUR, USD, XAF, XOF]
-
     Payment:
       type: object
       properties:
         id:
           type: string
           description: Server-generated transaction identifier
-        amount:
-          $ref: '#/components/schemas/Money'
-        createdAt:
+        external_reference:
           type: string
-          format: date-time
-          description: ISO 8601 datetime or integer timestamp
+          description: Client-provided reference identifier
+        amount:
+          type: integer
+          description: Monetary amount in major currency units
+        currency:
+          type: string
+          description: Currency code (e.g., XAF, XOF)
+        created_at:
+          type: integer
+          format: int64
+          description: integer timestamp
         network:
           type: string
           description: Provider or network label (e.g., MTN, ORANGE, stripe)
         status:
           type: string
-          description: Transaction status
+          description: Transaction status. Please refer to the possible values below case-sensitive.
           enum:
             - CREATED
             - INITIALISED
@@ -264,80 +449,104 @@ components:
           type: number
           format: float
           nullable: true
-        netAmount:
-          type: number
-          format: float
-          nullable: true
-        completedAt:
+        completed_at:
           type: string
           format: date-time
           nullable: true
-        notifiedAt:
+        notified_at:
           type: string
           format: date-time
           nullable: true
-        phoneNumber:
+        phone_number:
           type: string
           nullable: true
         country:
           type: string
           nullable: true
+        net_amount:
+          type: number
+          format: float
+          nullable: true
 
     CashOutResponse:
       type: object
       properties:
+        message:
+          type: string
+          description: Status message
         cashOut:
           $ref: '#/components/schemas/Payment'
+        code:
+          type: integer
+          description: Numeric code representing the result
       example:
+        message: "created"
         cashOut:
-          id: "a123"
-          amount:
-            amount: 100
-            currency: "XAF"
-          createdAt: "2023-01-01T12:00:00Z"
+          id: "934ca3f6-dad6-4503-ae36-c01ca3354183"
+          amount: 100
+          currency: "XAF"
+          created_at: 1768646496
           network: "MTN"
           status: "PENDING"
-          fees: 2.5
-          netAmount: 97.5
-          phoneNumber: "+1234567890"
-          country: "CM"
-
+          code: 201
     VerifyResponse:
       type: object
       properties:
+        code:
+          type: integer
+          description: Numeric code representing the result
+        message:
+          type: string
+          description: Status message
         verify:
           $ref: '#/components/schemas/Payment'
       example:
+        code: 200
+        message: "success"
         verify:
-          id: "a123"
-          amount:
-            amount: 100
-            currency: "XAF"
-          createdAt: "2023-01-01T12:00:00Z"
-          network: "MTN"
-          status: "SUCCESS"
-          completedAt: "2023-01-01T12:01:00Z"
-          notifiedAt: "2023-01-01T12:01:05Z"
-          phoneNumber: "+1234567890"
+          id: "934ca3f6-dad6-2005-ae36-c01ca3354183"
+          external_reference: "my-site-reference"
+          amount: 100
+          currency: "XAF"
+          fees: 3
+          created_at: 1768646496
+          network: "orange"
+          status: "success"
+          completed_at: null
+          notified_at: "2026-01-02T23:14:03+01:00"
+          phone_number: "+1234567890"
+          net_amount: 100
           country: "CM"
 
     AccountResponse:
       type: object
       properties:
+        code:
+          type: integer
+          description: Numeric code representing the result
+        message:
+          type: string
+          description: Status message
         account:
           type: object
           properties:
             balance:
-              $ref: '#/components/schemas/Money'
-            viewedAt:
+              type: integer
+              description: Account balance in major currency units
+            currency:
+              type: string
+              description: Currency code (e.g., XAF, XOF)
+            date:
               type: string
               format: date-time
+              description: Timestamp of when the balance was viewed
       example:
+        code: 200
+        message: "success"
         account:
-          balance:
-            amount: 1000.0
-            currency: "XAF"
-          viewedAt: "2023-01-01T10:00:00Z"
+          balance: 1000000
+          currency: "XAF"
+          date: "2026-01-17T10:45:57+00:00"
 
     ErrorResponse:
       type: object
