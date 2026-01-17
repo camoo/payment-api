@@ -1,0 +1,843 @@
+{
+  "item": [
+    {
+      "name": "cashout",
+      "description": "",
+      "item": [
+        {
+          "id": "aef04ed4-2f47-41c8-9e79-62c4d8e8043c",
+          "name": "Create a cashout (process payment / transfer)",
+          "request": {
+            "name": "Create a cashout (process payment / transfer)",
+            "description": {
+              "content": "Initiate a cashout to a recipient (mobile-money, bank or other provider).\nRequest must be authenticated with X-Api-Key and X-Api-Secret headers.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "cashout"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Api-Key",
+                "value": "{{apiKey}}"
+              },
+              {
+                "key": "X-Api-Secret",
+                "value": "{{apiSecret}}"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": \"<float>\",\n  \"phone_number\": \"<string>\",\n  \"notification_url\": \"<uri>\",\n  \"external_reference\": \"<string>\",\n  \"shopping_cart_details\": {\n    \"user_browser_data\": {\n      \"userAgent\": \"<string>\",\n      \"acceptLanguage\": \"<string>\",\n      \"ipAddress\": \"<string>\"\n    },\n    \"key_0\": \"string\",\n    \"key_1\": 9262,\n    \"key_2\": 1493\n  }\n}",
+              "options": {
+                "raw": {
+                  "headerFamily": "json",
+                  "language": "json"
+                }
+              }
+            },
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "5959113c-45b5-43a6-87ed-d3b85f96e83c",
+              "name": "Cashout created / accepted",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cashout"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Api-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"amount\": \"<float>\",\n  \"phone_number\": \"<string>\",\n  \"notification_url\": \"<uri>\",\n  \"external_reference\": \"<string>\",\n  \"shopping_cart_details\": {\n    \"user_browser_data\": {\n      \"userAgent\": \"<string>\",\n      \"acceptLanguage\": \"<string>\",\n      \"ipAddress\": \"<string>\"\n    },\n    \"key_0\": \"string\",\n    \"key_1\": 9262,\n    \"key_2\": 1493\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "headerFamily": "json",
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"<string>\",\n  \"cashOut\": {\n    \"id\": \"<string>\",\n    \"external_reference\": \"<string>\",\n    \"amount\": \"<integer>\",\n    \"currency\": \"<string>\",\n    \"created_at\": \"<long>\",\n    \"network\": \"<string>\",\n    \"status\": \"CREATED\",\n    \"fees\": \"<float>\",\n    \"completed_at\": \"<dateTime>\",\n    \"notified_at\": \"<dateTime>\",\n    \"phone_number\": \"<string>\",\n    \"country\": \"<string>\",\n    \"net_amount\": \"<integer>\"\n  },\n  \"code\": \"<integer>\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "51633b96-ba68-452b-b699-48b4cd95c994",
+              "name": "Bad request (validation error)",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cashout"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Api-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"amount\": \"<float>\",\n  \"phone_number\": \"<string>\",\n  \"notification_url\": \"<uri>\",\n  \"external_reference\": \"<string>\",\n  \"shopping_cart_details\": {\n    \"user_browser_data\": {\n      \"userAgent\": \"<string>\",\n      \"acceptLanguage\": \"<string>\",\n      \"ipAddress\": \"<string>\"\n    },\n    \"key_0\": \"string\",\n    \"key_1\": 9262,\n    \"key_2\": 1493\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "headerFamily": "json",
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"<integer>\",\n  \"message\": \"<string>\",\n  \"errors\": {\n    \"key_0\": 1385.2615045796379,\n    \"key_1\": true,\n    \"key_2\": true,\n    \"key_3\": 5596.588895983681\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2c035cdc-57ed-47b7-acfc-09e0b5f76392",
+              "name": "Authentication failed (invalid or missing API credentials)",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cashout"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Api-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"amount\": \"<float>\",\n  \"phone_number\": \"<string>\",\n  \"notification_url\": \"<uri>\",\n  \"external_reference\": \"<string>\",\n  \"shopping_cart_details\": {\n    \"user_browser_data\": {\n      \"userAgent\": \"<string>\",\n      \"acceptLanguage\": \"<string>\",\n      \"ipAddress\": \"<string>\"\n    },\n    \"key_0\": \"string\",\n    \"key_1\": 9262,\n    \"key_2\": 1493\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "headerFamily": "json",
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"<integer>\",\n  \"message\": \"<string>\",\n  \"errors\": {\n    \"key_0\": 1385.2615045796379,\n    \"key_1\": true,\n    \"key_2\": true,\n    \"key_3\": 5596.588895983681\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "77ceb340-0b5e-42dd-b90c-d8376e4054a4",
+              "name": "Payment or account insufficient funds (implementation-dependent)",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cashout"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Api-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"amount\": \"<float>\",\n  \"phone_number\": \"<string>\",\n  \"notification_url\": \"<uri>\",\n  \"external_reference\": \"<string>\",\n  \"shopping_cart_details\": {\n    \"user_browser_data\": {\n      \"userAgent\": \"<string>\",\n      \"acceptLanguage\": \"<string>\",\n      \"ipAddress\": \"<string>\"\n    },\n    \"key_0\": \"string\",\n    \"key_1\": 9262,\n    \"key_2\": 1493\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "headerFamily": "json",
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Payment Required",
+              "code": 402,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"<integer>\",\n  \"message\": \"<string>\",\n  \"errors\": {\n    \"key_0\": 1385.2615045796379,\n    \"key_1\": true,\n    \"key_2\": true,\n    \"key_3\": 5596.588895983681\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "80f253ad-9eda-42b5-aa0b-39969789ac86",
+              "name": "Unprocessable entity (provider specific validation error)",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cashout"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Api-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"amount\": \"<float>\",\n  \"phone_number\": \"<string>\",\n  \"notification_url\": \"<uri>\",\n  \"external_reference\": \"<string>\",\n  \"shopping_cart_details\": {\n    \"user_browser_data\": {\n      \"userAgent\": \"<string>\",\n      \"acceptLanguage\": \"<string>\",\n      \"ipAddress\": \"<string>\"\n    },\n    \"key_0\": \"string\",\n    \"key_1\": 9262,\n    \"key_2\": 1493\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "headerFamily": "json",
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"<integer>\",\n  \"message\": \"<string>\",\n  \"errors\": {\n    \"key_0\": 1385.2615045796379,\n    \"key_1\": true,\n    \"key_2\": true,\n    \"key_3\": 5596.588895983681\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9dec6941-279e-44f1-a997-b00b1be0147c",
+              "name": "Internal server error / provider failure",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "cashout"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Api-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"amount\": \"<float>\",\n  \"phone_number\": \"<string>\",\n  \"notification_url\": \"<uri>\",\n  \"external_reference\": \"<string>\",\n  \"shopping_cart_details\": {\n    \"user_browser_data\": {\n      \"userAgent\": \"<string>\",\n      \"acceptLanguage\": \"<string>\",\n      \"ipAddress\": \"<string>\"\n    },\n    \"key_0\": \"string\",\n    \"key_1\": 9262,\n    \"key_2\": 1493\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "headerFamily": "json",
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"<integer>\",\n  \"message\": \"<string>\",\n  \"errors\": {\n    \"key_0\": 1385.2615045796379,\n    \"key_1\": true,\n    \"key_2\": true,\n    \"key_3\": 5596.588895983681\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "verify",
+      "description": "",
+      "item": [
+        {
+          "id": "7b947021-8b1a-44ce-9faf-102f1a649e8d",
+          "name": "Verify transaction status",
+          "request": {
+            "name": "Verify transaction status",
+            "description": {
+              "content": "Return the payment/cashout resource for the given id. The repository expects the query param name `id`.\nRequest must be authenticated with X-Api-Key and X-Api-Secret headers.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "verify"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "description": {
+                    "content": "(Required) The transaction id to verify (server-generated id)",
+                    "type": "text/plain"
+                  },
+                  "key": "id",
+                  "value": "<string>"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Api-Key",
+                "value": "{{apiKey}}"
+              },
+              {
+                "key": "X-Api-Secret",
+                "value": "{{apiSecret}}"
+              }
+            ],
+            "method": "GET",
+            "body": {},
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "1e567c09-a8f2-46da-89a4-461c59f285c5",
+              "name": "Payment verification result",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "verify"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) The transaction id to verify (server-generated id)",
+                        "type": "text/plain"
+                      },
+                      "key": "id",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Api-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"<integer>\",\n  \"message\": \"<string>\",\n  \"verify\": {\n    \"id\": \"<string>\",\n    \"external_reference\": \"<string>\",\n    \"amount\": \"<integer>\",\n    \"currency\": \"<string>\",\n    \"created_at\": \"<long>\",\n    \"network\": \"<string>\",\n    \"status\": \"CONFIRMED\",\n    \"fees\": \"<float>\",\n    \"completed_at\": \"<dateTime>\",\n    \"notified_at\": \"<dateTime>\",\n    \"phone_number\": \"<string>\",\n    \"country\": \"<string>\",\n    \"net_amount\": \"<integer>\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "bd3ed318-a059-45aa-ae13-ad42c938b46b",
+              "name": "Bad request",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "verify"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) The transaction id to verify (server-generated id)",
+                        "type": "text/plain"
+                      },
+                      "key": "id",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Api-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"<integer>\",\n  \"message\": \"<string>\",\n  \"errors\": {\n    \"key_0\": 1385.2615045796379,\n    \"key_1\": true,\n    \"key_2\": true,\n    \"key_3\": 5596.588895983681\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "f4baa602-fe8e-4156-8210-4ea5cddf4406",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "verify"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) The transaction id to verify (server-generated id)",
+                        "type": "text/plain"
+                      },
+                      "key": "id",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Api-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"<integer>\",\n  \"message\": \"<string>\",\n  \"errors\": {\n    \"key_0\": 1385.2615045796379,\n    \"key_1\": true,\n    \"key_2\": true,\n    \"key_3\": 5596.588895983681\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "c4592983-999c-4223-89ec-0b85cfd35b20",
+              "name": "Transaction not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "verify"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "disabled": false,
+                      "description": {
+                        "content": "(Required) The transaction id to verify (server-generated id)",
+                        "type": "text/plain"
+                      },
+                      "key": "id",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Api-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"<integer>\",\n  \"message\": \"<string>\",\n  \"errors\": {\n    \"key_0\": 1385.2615045796379,\n    \"key_1\": true,\n    \"key_2\": true,\n    \"key_3\": 5596.588895983681\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "account",
+      "description": "",
+      "item": [
+        {
+          "id": "e3af7846-9aea-4f7f-89d0-e043becf5db9",
+          "name": "Get account balance and metadata",
+          "request": {
+            "name": "Get account balance and metadata",
+            "description": {
+              "content": "Returns the account balance and viewed timestamp. Requires API credentials.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "account"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "X-Api-Key",
+                "value": "{{apiKey}}"
+              },
+              {
+                "key": "X-Api-Secret",
+                "value": "{{apiSecret}}"
+              }
+            ],
+            "method": "GET",
+            "body": {},
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "d9d8f6ca-ba7e-4283-807d-942e143ef28f",
+              "name": "Account information",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "account"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Api-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"<integer>\",\n  \"message\": \"<string>\",\n  \"account\": {\n    \"balance\": \"<integer>\",\n    \"currency\": \"<string>\",\n    \"date\": \"<dateTime>\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "cfa752b5-8992-4cc7-b948-eb555536f837",
+              "name": "Unauthorized",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "account"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "X-Api-Key",
+                    "value": "<API Key>"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"<integer>\",\n  \"message\": \"<string>\",\n  \"errors\": {\n    \"key_0\": 1385.2615045796379,\n    \"key_1\": true,\n    \"key_2\": true,\n    \"key_3\": 5596.588895983681\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ]
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://api.camoo.cm/v1/payment"
+    },
+    {
+      "key": "apiKey",
+      "value": "YOUR_API_KEY"
+    },
+    {
+      "key": "apiSecret",
+      "value": "YOUR_API_SECRET"
+    }
+  ],
+  "info": {
+    "_postman_id": "06d5ba09-7935-43d9-a330-4b92230cc9f5",
+    "name": "Camoo Payment API (Cashout) - OpenAPI",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Concrete OpenAPI (Swagger) specification describing the cashout flow and related endpoints found in the repository.\n- Base server example: http://localhost:8000\n- Authentication uses two header API credentials: X-Api-Key and X-Api-Secret.\n",
+      "type": "text/plain"
+    }
+  }
+}
