@@ -1,12 +1,17 @@
 openapi: 3.0.3
 info:
-  title: Camoo Payment API (Cashout) - OpenAPI
+  title: Camoo Payment API
   version: "1.0.0"
   description: |
-    Concrete OpenAPI (Swagger) specification describing the cashout flow and related endpoints found in the repository.
+    Camoo Payment API for cashout, transaction verification, and account balance access.
     - Base server example: http://localhost:8000
     - Authentication uses two header API credentials: X-Api-Key and X-Api-Secret.
-    - [Postman Collection](https://raw.githubusercontent.com/camoo/payment-api/refs/heads/main/docs/postman/Camoo-Payment-API.postman_collection.json)
+    - [PHP SDK](https://github.com/camoo/payment-api)
+
+externalDocs:
+    description: Postman Collection
+    url: https://raw.githubusercontent.com/camoo/payment-api/refs/heads/main/docs/postman/Camoo-Payment-API.postman_collection.json
+
 servers:
   - url: https://api.camoo.cm/v1/payment
     description: Production server
