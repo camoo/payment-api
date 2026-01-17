@@ -36,7 +36,7 @@ A simple, **PSR-4** compliant PHP library for accessing the Camoo Payment API. T
       Camoo Payment API OpenAPI documentation [Camoo Payment API documentation](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camoo/payment-api/main/openapi.yaml).
 - 📦 Postman Collection 
   - Download the ready-to-use Postman collection:
-  [Postman Collection](https://api.camoo.cm/docs/postman/camoo-payment.postman_collection.json)
+  [Postman Collection](docs/postman/Camoo-Payment-API.postman_collection.json)
 
 ## Installation
 
