@@ -6,7 +6,7 @@ info:
     Concrete OpenAPI (Swagger) specification describing the cashout flow and related endpoints found in the repository.
     - Base server example: http://localhost:8000
     - Authentication uses two header API credentials: X-Api-Key and X-Api-Secret.
-    - [Postman Collection](docs/postman/Camoo-Payment-API.postman_collection.json)
+    - [Postman Collection](https://raw.githubusercontent.com/camoo/payment-api/refs/heads/main/docs/postman/Camoo-Payment-API.postman_collection.json)
 servers:
   - url: https://api.camoo.cm/v1/payment
     description: Production server
