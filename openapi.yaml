@@ -217,8 +217,8 @@ paths:
                   acceptLanguage: "en-US,en;q=0.9"
                   ipAddress: "1.2.3.4"
       responses:
-        "200":
-          description: Cashout accepted / Payment resource (synchronous view)
+        "201":
+          description: Cashout created / accepted
           content:
             application/json:
               schema:
@@ -262,7 +262,7 @@ paths:
       x-codeSamples:
         - lang: cURL
           source: |
-            curl -sS -X GET 'https://api.camoo.cm/v1/payment/verify?id=TRANSACTION_ID' \
+            curl -sS -X GET 'https://api.camoo.cm/v1/payment/verify?id=934ca3f6-dad6-2005-ae36-c01ca3354183' \
             -H 'X-Api-Key: YOUR_API_KEY' \
             -H 'X-Api-Secret: YOUR_API_SECRET'
         - lang: Python
@@ -275,11 +275,106 @@ paths:
               'X-Api-Secret': 'YOUR_API_SECRET'
             }
             params = {
-              'id': 'TRANSACTION_ID'
+              'id': '934ca3f6-dad6-4503-ae36-c01ca3354183'
             }
 
             response = requests.get(url, headers=headers, params=params)
             print(response.json())
+
+        - lang:  Java
+          source: |
+            import java.io.BufferedReader;
+            import java.io.InputStreamReader;
+            import java.net.HttpURLConnection;
+            import java.net.URL;
+
+            public class VerifyTransactionExample {
+                public static void main(String[] args) {
+                    try {
+                        String transactionId = "934ca3f6-dad6-4503-ae36-c01ca3354183";
+                        URL url = new URL("https://api.camoo.cm/v1/payment/verify?id=" + transactionId);
+                        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                        conn.setRequestMethod("GET");
+                        conn.setRequestProperty("X-Api-Key", "YOUR_API_KEY");
+                        conn.setRequestProperty("X-Api-Secret", "YOUR_API_SECRET");
+
+                        BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                        String inputLine;
+                        StringBuilder content = new StringBuilder();
+                        while ((inputLine = in.readLine()) != null) {
+                            content.append(inputLine);
+                        }
+                        in.close();
+
+                        System.out.println("Response: " + content.toString());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+        - lang:   PHP
+          source: |
+            <?php
+            $transactionId = '934ca3f6-dad6-4503-ae36-c01ca3354183';
+            $url = 'https://api.camoo.cm/v1/payment/verify?id=' . urlencode($transactionId); 
+            $options = array(
+              'http' => array(
+                'header'  => "X-Api-Key: YOUR_API_KEY\r\n" .
+                             "X-Api-Secret: YOUR_API_SECRET\r\n",
+                'method'  => 'GET',
+              ),
+            );
+            $context  = stream_context_create($options);
+            $result = file_get_contents($url, false, $context);
+            if ($result === FALSE) {
+              die('Error occurred');
+            }
+            var_dump($result);
+            ?>
+
+        - lang:  Ruby
+          source: |
+            require 'net/http'
+            require 'uri'
+
+            transaction_id = '934ca3f6-dad6-4503-ae36-c01ca3354183'
+            uri = URI.parse("https://api.camoo.cm/v1/payment/verify?id=#{transaction_id}")
+            request = Net::HTTP::Get.new(uri)
+            request["X-Api-Key"] = "YOUR_API_KEY"
+            request["X-Api-Secret"] = "YOUR_API_SECRET"
+
+            req_options = {
+              use_ssl: uri.scheme == "https",
+            }
+
+            response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
+              http.request(request)
+            end
+
+            puts response.body
+
+        - lang:  JavaScript
+          source: |
+            const axios = require('axios');
+
+            const params = {
+              id: '934ca3f6-dad6-4503-ae36-c01ca3354183'
+            };
+
+            axios.get('https://api.camoo.cm/v1/payment/verify', {
+              headers: {
+                'X-Api-Key': 'YOUR_API_KEY',
+                'X-Api-Secret': 'YOUR_API_SECRET'
+              },
+              params: params
+            })
+            .then(response => {
+              console.log(response.data);
+            })
+            .catch(error => {
+              console.error(error);
+            });
       description: |
         Return the payment/cashout resource for the given id. The repository expects the query param name `id`.
         Request must be authenticated with X-Api-Key and X-Api-Secret headers.
@@ -464,7 +559,7 @@ components:
           type: string
           nullable: true
         net_amount:
-          type: number
+          type: integer
           format: float
           nullable: true
 
