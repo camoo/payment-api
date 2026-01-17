@@ -515,7 +515,7 @@ components:
           description: Client-provided reference identifier
         amount:
           type: integer
-          description: Monetary amount in major currency units
+          description: Final settled amount (rounded by provider)
         currency:
           type: string
           description: Currency code (e.g., XAF, XOF)
@@ -646,9 +646,9 @@ components:
     ErrorResponse:
       type: object
       properties:
-        success:
-          type: boolean
-          example: false
+        code:
+          type: integer
+          description: Numeric code representing the error
         message:
           type: string
           example: "Invalid payload"
