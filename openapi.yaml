@@ -4,6 +4,13 @@ info:
   version: "1.0.0"
   description: |
     Camoo Payment API for cashout, transaction verification, and account balance access.
+
+    🔔 **Payment Notifications**
+    - Sent via HTTP GET to the merchant `notification_url`
+    - Signed using HMAC-SHA256 derived from the API Secret
+    - Signature is provided as the `sig` query parameter
+    - Merchants MUST verify the signature before trusting the data. The merchant endpoint MUST be idempotent. Camoo may retry notifications until HTTP 200 is returned.
+    
     - Base server example: http://localhost:8000
     - Authentication uses two header API credentials: X-Api-Key and X-Api-Secret.
     - [PHP SDK](https://github.com/camoo/payment-api)
@@ -259,6 +266,38 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+      callbacks:
+        paymentStatus:
+          '{$request.body#/notification_url}':
+            get:
+              summary: Payment status notification (signed)
+              description: |
+                Camoo sends a signed HTTP GET request to the merchant's
+                notification URL whenever the payment status changes.
+
+                The merchant endpoint MUST be idempotent.
+                Camoo may retry notifications until HTTP 200 is returned.
+
+                The request MUST be verified using the API Secret.
+
+                Signature base string:
+                  payment_id={value}&status={value}&status_time={value}[&trx={value}]
+              parameters:
+                - $ref: '#/components/parameters/PaymentId'
+                - $ref: '#/components/parameters/PaymentStatus'
+                - $ref: '#/components/parameters/PaymentStatusTime'
+                - $ref: '#/components/parameters/PaymentTrx'
+                - $ref: '#/components/parameters/PaymentSignature'
+              responses:
+                '200':
+                  description: Notification accepted
+                '401':
+                  description: Invalid signature
+                '408':
+                  description: Notification expired
+                '409':
+                  description: Duplicate notification (already processed)
+
 
   /verify:
     get:
@@ -555,6 +594,65 @@ components:
       in: header
       name: X-Api-Secret
       description: Secret for authenticating the request (use together with X-Api-Key).
+  parameters:
+    PaymentId:
+      name: payment_id
+      in: query
+      required: true
+      schema:
+        type: string
+
+    PaymentStatus:
+      name: status
+      in: query
+      required: true
+      schema:
+        type: string
+        enum:
+          - CREATED
+          - INITIALISED
+          - IN_PROGRESS
+          - CONFIRMED
+          - SUCCESS
+          - PENDING
+          - FAILED
+          - CANCELED
+          - ERRORED
+          - UNDERINVESTIGATION
+
+    PaymentStatusTime:
+      name: status_time
+      in: query
+      required: true
+      schema:
+        type: string
+        format: date-time
+
+    PaymentTrx:
+      name: trx
+      in: query
+      required: false
+      schema:
+        type: string
+
+    PaymentSignature:
+      name: sig
+      in: query
+      required: true
+      schema:
+        type: string
+      description: HMAC-SHA256 signature using the API Secret
+
+  x-signature:
+    algorithm: HMAC-SHA256
+    secret: API Secret (X-Api-Secret)
+    encoding: RFC3986
+    description: |
+      Signature is computed by:
+      1. Removing `sig` from parameters
+      2. Sorting parameters alphabetically
+      3. Building query string with RFC3986 encoding
+      4. Applying HMAC-SHA256 using API Secret
 
   schemas:
     CashOutRequest:
@@ -706,6 +804,34 @@ components:
           phone_number: "+1234567890"
           net_amount: 100
           country: "CM"
+    PaymentNotification:
+      type: object
+      required:
+        - payment_id
+        - status
+        - status_time
+        - sig
+      properties:
+        payment_id:
+          type: string
+          description: Camoo-generated payment identifier
+        status:
+          type: string
+          description: Current payment status
+          example: success
+        status_time:
+          type: string
+          format: date-time
+          description: ISO-8601 timestamp of the status
+        trx:
+          type: string
+          description: Merchant external reference (if provided)
+          nullable: true
+        sig:
+          type: string
+          description: |
+            HMAC-SHA256 signature of the query parameters,
+            generated using the API Secret.
 
     AccountResponse:
       type: object

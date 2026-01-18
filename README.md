@@ -38,6 +38,46 @@ A simple, **PSR-4** compliant PHP library for accessing the Camoo Payment API. T
   - Download the ready-to-use Postman collection:
   [Postman Collection](docs/postman/Camoo-Payment-API.postman_collection.json)
 
+### Payment Notifications (Signed Callbacks)
+
+Camoo sends payment status notifications via **HTTP GET** requests to the merchant’s `notification_url`.
+
+Each notification is **cryptographically signed** and includes a `sig` query parameter.
+
+#### Signature details
+
+* **Algorithm:** HMAC-SHA256
+* **Secret:** API Secret (`X-Api-Secret`)
+* **Payload:** Canonical query string built from request parameters
+* **Encoding:** RFC3986 (URL-encoded)
+
+**Signature base string format:**
+
+```
+payment_id={value}&status={value}&status_time={value}[&trx={value}]
+```
+
+> Notes:
+>
+> * The `sig` parameter is **excluded** from the base string
+> * The merchant endpoint **MUST be idempotent**
+> * Camoo may retry notifications until **HTTP 200** is returned
+
+Merchants **MUST verify the signature** before trusting or processing the callback.
+
+---
+
+#### Example notification request
+
+```http
+GET /callback?
+payment_id=934ca3f6
+&status=CONFIRMED
+&status_time=2026-01-18T11:42:03+00:00
+&trx=my-site-ref
+&sig=7f9c8b8d1c0e9c...
+```
+
 ## Installation
 
 Install the package via [Composer](https://getcomposer.org/):
