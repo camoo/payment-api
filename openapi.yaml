@@ -11,10 +11,9 @@ info:
     - Signature is provided as the `sig` query parameter
     - Merchants MUST verify the signature before trusting the data. The merchant endpoint MUST be idempotent. Camoo may retry notifications until HTTP 200 is returned.
     
-    🔎 **Status normalization**
-    - All `status` values MUST be treated as case-insensitive by merchants.
+     **Status normalization**
+    - All **status** values MUST be treated as `case-insensitive` by merchants.
     
-    ## Getting started
     - Base server example: http://localhost:8000
     - Authentication uses two header API credentials: X-Api-Key and X-Api-Secret.
     - [PHP SDK](https://github.com/camoo/payment-api)
@@ -279,8 +278,8 @@ paths:
                 Camoo sends a signed HTTP GET request to the merchant's
                 notification URL whenever the payment status changes.
                 
-                - The `status` parameter is **case-insensitive**
-                - Merchants SHOULD normalize it (e.g. `strtoupper` or `strtolower`)
+                - The *status* parameter is **case-insensitive**
+                - Merchants SHOULD normalize it (e.g. **strtoupper** or **strtolower**)
                 - The merchant endpoint MUST be idempotent
 
                 The merchant endpoint MUST be idempotent.
@@ -630,7 +629,7 @@ components:
         description: |
           Current payment status. Please refer to the possible values above (case-sensitive).
           ⚠️ **Case-insensitive**: merchants MUST treat this value as case-insensitive.
-        example: `confirmed`, `CONFIRMED`, `Confirmed` are equivalent.
+        example: confirmed, CONFIRMED, Confirmed are equivalent.
 
     PaymentStatusTime:
       name: status_time
